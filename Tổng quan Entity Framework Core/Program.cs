@@ -182,6 +182,16 @@ namespace MyApp
             Console.WriteLine();
             TruyVan_BanGhi("SP099");
 
+            
+            // gọi hàm cập nhật bản ghi
+            Console.WriteLine();
+            CapNhat_BanGhi(3, "May loc nuoc");
+
+
+            // gọi hàm xóa bản ghi
+            Console.WriteLine();
+            Xoa_BanGhi(4);
+
 
             // gọi hàm xóa cơ sở dữ liệu
             Console.WriteLine();
@@ -440,12 +450,74 @@ namespace MyApp
 
 
         #region CẬP NHẬT BẢN GHI
+            public static void CapNhat_BanGhi(int thamSo_ID, string thamSo_Ten)
+            {
+                using (var dt_DbContext = new QL_SanPhamContext())
+                {
+                    // tạo biến bản ghi
+                    // để truy vấn bản ghi theo ID
+                    var ban_ghi = (
+                                    from item in dt_DbContext.SanPhams
+                                    where (item.Id == thamSo_ID)
+                                    select item
+                                  ).FirstOrDefault();
 
+
+                    // nếu tìm được bản ghi
+                    // thì giá trị sẽ khác null
+                    if (ban_ghi != null)
+                    {
+                        // đổi tên sản phẩm
+                        ban_ghi.TenSanPham = thamSo_Ten;
+                        
+
+                        // in ra thông báo
+                        Console.WriteLine($"San pham co Id = {ban_ghi.Id}");
+                        Console.WriteLine($"=> Co ten moi = \"{ban_ghi.TenSanPham}\"");
+                        
+
+                        // gọi phương thức SaveChanges()
+                        // để cập nhật cơ sở dữ liệu
+                        dt_DbContext.SaveChanges();
+                    }
+                }
+            }
         #endregion
 
 
         #region XÓA BẢN GHI
-        
+            public static void Xoa_BanGhi(int thamSo_ID)
+            {
+                using (var dt_DbContext = new QL_SanPhamContext())
+                {
+                    // tạo biến bản ghi
+                    // để truy vấn bản ghi theo ID
+                    var ban_ghi = (
+                                    from item in dt_DbContext.SanPhams
+                                    where (item.Id == thamSo_ID)
+                                    select item
+                                  ).FirstOrDefault();
+
+
+                    // nếu tìm được bản ghi
+                    // thì giá trị sẽ khác null
+                    if (ban_ghi != null)
+                    {
+                        // gọi phương thức Remove()
+                        // để xóa bản ghi
+                        dt_DbContext.Remove(ban_ghi);
+
+
+                        // gọi phương thức SaveChanges()
+                        // để cập nhật cơ sở dữ liệu
+                        dt_DbContext.SaveChanges();
+
+
+                        // in ra thông báo
+                        Console.WriteLine($"Da xoa ban ghi co Id = {thamSo_ID}");
+                    }
+                }
+            }
         #endregion
     }
 }
